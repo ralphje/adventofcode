@@ -1,7 +1,7 @@
 import math
 from collections.abc import Iterable
 
-ColorCount = dict[str, int]
+type ColorCount = dict[str, int]
 
 
 def _parse_document(document: str) -> Iterable[tuple[int, list[ColorCount]]]:
