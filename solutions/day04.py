@@ -1,7 +1,7 @@
 import collections
 from collections.abc import Iterable
 
-type Game = list[set[str], set[str]]
+type Game = list[set[str]]
 
 
 def _parse_cards(document: str) -> Iterable[Game]:
@@ -90,7 +90,7 @@ def part_2(document: str) -> int:
     Including the original set of scratchcards, how many total scratchcards do you end up with?
     """
 
-    card_counts = collections.Counter()
+    card_counts: collections.Counter[int] = collections.Counter()
     for i, game in enumerate(_parse_cards(document)):
         card_counts.update({
             i: 1,  # increase the card count for the current game
