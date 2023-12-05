@@ -34,4 +34,6 @@ humidity-to-location map:
 56 93 4
 #### part_1
 35
+#### part_2
+46
 ####
