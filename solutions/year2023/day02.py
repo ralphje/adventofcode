@@ -4,7 +4,7 @@ from collections.abc import Iterable
 type ColorCount = dict[str, int]
 
 
-def _parse_document(document: str) -> Iterable[tuple[int, list[ColorCount]]]:
+def _parse_document(lines: list[str]) -> Iterable[tuple[int, list[ColorCount]]]:
     """Parses the document, and returns iterable with pairs of::
 
     game_id, [{color: count}, ...]
@@ -28,12 +28,12 @@ def _parse_document(document: str) -> Iterable[tuple[int, list[ColorCount]]]:
         )
         # Iterate over every line in the document, split on ': '.
         # game_line[0] is the game info, the game sets are in game_line[1]
-        for line in document.splitlines()
+        for line in lines
         if (game_line := line.split(": "))
     )
 
 
-def part_1(document: str, thresholds: ColorCount | None = None) -> int:
+def part_1(document: list[str], thresholds: ColorCount | None = None) -> int:
     """You play several games and record the information from each game (your puzzle input). Each
     game is listed with its ID number (like the 11 in Game 11: ...) followed by a
     semicolon-separated list of subsets of cubes that were revealed from the bag (like 3 red,
@@ -82,7 +82,7 @@ def part_1(document: str, thresholds: ColorCount | None = None) -> int:
 COLORS = ("red", "green", "blue")
 
 
-def part_2(document: str) -> int:
+def part_2(document: list[str]) -> int:
     """As you continue your walk, the Elf poses a second question: in each game you played, what is
     the fewest number of cubes of each color that could have been in the bag to make the game
     possible?

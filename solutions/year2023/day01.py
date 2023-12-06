@@ -1,4 +1,4 @@
-def part_1(document: str) -> int:
+def part_1(lines: list[str]) -> int:
     """The newly-improved calibration document consists of lines of text; each line originally
     contained a specific calibration value that the Elves now need to recover. On each line, the
     calibration value can be found by combining the first digit and the last digit (in that order)
@@ -20,7 +20,7 @@ def part_1(document: str) -> int:
     # Bit of abuse of the walrus operator here, but it works ;)
     return sum(
         int(f"{line_digits[0]}{line_digits[-1]}")
-        for line in document.splitlines()
+        for line in lines
         if (line_digits := [c for c in line if c.isdigit()])
     )
 
@@ -38,7 +38,7 @@ TEXT_DIGITS = {
 }
 
 
-def part_2(document: str) -> int:
+def part_2(lines: list[str]) -> int:
     """Your calculation isn't quite right. It looks like some of the digits are actually spelled
     out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid
     "digits".
@@ -61,7 +61,7 @@ def part_2(document: str) -> int:
     """
 
     all_digits = []
-    for line in document.splitlines():
+    for line in lines:
         line_digits = []
         for i, c in enumerate(line):
             if c.isdigit():

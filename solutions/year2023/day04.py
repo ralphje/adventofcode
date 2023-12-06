@@ -4,13 +4,11 @@ from collections.abc import Iterable
 type Game = list[set[str]]
 
 
-def _parse_cards(document: str) -> Iterable[Game]:
-    return (
-        [set(g.split()) for g in line.split(":")[1].split("|")] for line in document.splitlines()
-    )
+def _parse_cards(document: list[str]) -> Iterable[Game]:
+    return ([set(g.split()) for g in line.split(":")[1].split("|")] for line in document)
 
 
-def part_1(document: str) -> int:
+def part_1(document: list[str]) -> int:
     """s far as the Elf has been able to figure out, you have to figure out which of the numbers
     you have appear in the list of winning numbers. The first match makes the card worth one point
     and each match after the first doubles the point value of that card.
@@ -47,7 +45,7 @@ def part_1(document: str) -> int:
     return sum(int(2 ** (len(game[0] & game[1]) - 1)) for game in _parse_cards(document))
 
 
-def part_2(document: str) -> int:
+def part_2(document: list[str]) -> int:
     """There's no such thing as "points". Instead, scratchcards only cause you to win more
     scratchcards equal to the number of winning numbers you have.
 

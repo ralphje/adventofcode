@@ -40,7 +40,7 @@ class Range:
     def __contains__(self, item: int) -> bool:
         return self.start <= item < self.stop
 
-    def __and__(self, other: Self) -> Self:
+    def __and__(self, other: Range) -> Range:
         """Returns the intersection of both ranges."""
         start = max(self.start, other.start)
         end = min(self.stop, other.stop)
@@ -49,15 +49,15 @@ class Range:
             return Range(start, length)
         return Range(0, 0)
 
-    def __add__(self, other: int) -> Self:
+    def __add__(self, other: int) -> Range:
         """Adds the integer to this range."""
         return Range(self.start + other, len(self))
 
-    def __sub__(self, other: int) -> Self:
+    def __sub__(self, other: int) -> Range:
         """Subtracts the integer to this range."""
         return Range(self.start - other, len(self))
 
-    def cut(self, other: Self) -> list[Self]:
+    def cut(self, other: Self) -> list[Range]:
         """Cuts away the provided range, and returns 0, 1 or 2 ranges at either end of the cut."""
         difference = []
         if self.start < other.start:
@@ -334,7 +334,7 @@ def part_2(document: str) -> int:
     # Iterate over each mapping and calculate our source/target ranges, generating a new
     # list of seed_ranges every time.
     for mapping in mappings:
-        new_values = []
+        new_values: list[MappingItem] = []
         for seed_range in seed_ranges:
             new_values.extend(_convert_range(seed_range, mapping))
         seed_ranges = new_values

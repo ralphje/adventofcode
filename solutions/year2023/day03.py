@@ -6,14 +6,14 @@ NUMBERS_RE = re.compile(r"\d+")
 type Coordinate = tuple[int, int]
 
 
-def _symbol_locations_in_document(document: str, pattern: re.Pattern[str]) -> Iterable[Coordinate]:
+def _symbol_locations_in_document(
+    document: list[str], pattern: re.Pattern[str]
+) -> Iterable[Coordinate]:
     """Gather all symbol locations in the document as defined in pattern, in an iterable of (y,x)
     tuples
     """
     return (
-        (i, symbol.start())
-        for i, line in enumerate(document.splitlines())
-        for symbol in pattern.finditer(line)
+        (i, symbol.start()) for i, line in enumerate(document) for symbol in pattern.finditer(line)
     )
 
 
@@ -30,7 +30,7 @@ def _vicinity(match: re.Match[str], line: int) -> Iterable[Coordinate]:
     )
 
 
-def part_1(document: str) -> int:
+def part_1(document: list[str]) -> int:
     """The engine schematic (your puzzle input) consists of a visual representation of the engine.
     There are lots of numbers and symbols you don't really understand, but apparently any number
     adjacent to a symbol, even diagonally, is a "part number" and should be included in your sum.
@@ -62,7 +62,7 @@ def part_1(document: str) -> int:
         # ... number group ...
         int(number.group())
         # ... in every line in the document ...
-        for i, line in enumerate(document.splitlines())
+        for i, line in enumerate(document)
         # ... every re number ...
         for number in NUMBERS_RE.finditer(line)
         # ... for which we've got a symbol around it
@@ -70,7 +70,7 @@ def part_1(document: str) -> int:
     )
 
 
-def part_2(document: str) -> int:
+def part_2(document: list[str]) -> int:
     """The missing part wasn't the only issue - one of the gears in the engine is wrong. A gear is
     any * symbol that is adjacent to exactly two part numbers. Its gear ratio is the result of
     multiplying those two numbers together.
@@ -105,7 +105,7 @@ def part_2(document: str) -> int:
 
     # Iterate over all numbers and check their vicinity to any of the gears. If so, put it in
     # a list with that gear.
-    for i, line in enumerate(document.splitlines()):
+    for i, line in enumerate(document):
         for number in NUMBERS_RE.finditer(line):
             for coordinate in _vicinity(number, i):
                 if coordinate in gears:

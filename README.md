@@ -1,4 +1,4 @@
-# adventofcode2023
+# adventofcode
 
 These are my solutions to some Advent of Code 2023 challenges. See https://adventofcode.com/2023
 for more information.
@@ -6,43 +6,52 @@ for more information.
 My goal is to create concise, yet readable solutions.
 
 ## Solutions
-Solutions are present in the `solutions/` folder. They can simply be executed by using the `exec.py`
-script included in the root. Example execution is as follows:
+Solutions are present in the `solutions/` folder. Solutions take the form of functions with either
+the name ``part_1`` or ``part_2`` and take a single argument. The argument must be annotated with
+either ``str`` to get the full input document, or ``list[str]`` to get the input document split by
+line.
 
+
+## Automation
+The `manage.py` script takes care of preparing, executing, testing and submitting solutions.
+
+It is best to first set up [advent-code-of-data](https://github.com/wimglenn/advent-of-code-data)
+with appriopriate session cookies to ensure that everything works as intended.
+
+Creation of solution template and test data:
+```shell
+python manage.py [year] [day] create
 ```
-python exec.py day01 part_1 --file input.txt
+
+Testing and executing the script (based on provided test data):
+```shell
+python manage.py [year] [day] run [part_1/part_2]
 ```
+
+Submitting the solution (will test the result using the test data first):
+```shell
+python manage.py [year] [day] submit [part_1/part_2]
+```
+
 
 ## Testing
-Typically, AoC challenges will include a small verification test. These are present in the
-`tests/` folder. Tests are typically written into the `test_data` folder.
+Typically, AoC challenges will include a small verification test. Test data is provided in the
+`tests/test_data/` folder in YAML files, e.g.:
 
-The structure in this folder is described in `tests/test_solution_data.py`. In summary, the files
-have this structure:
-
-```
-####
-first test data
-for both functions
-#### part_1
-result data for part_1
-#### part_2
-result data for part_2
-####
-second test data
-#### part_2
-result data for part_2
-####
+```yaml
+- input: test input
+  part_1: result for part 1
+  part_2: result for part 2
 ```
 
-Additional tests may be provided in the `tests/` folder, for instance if this format does not
-suffice.
+For executing individual challenges, see `manage.py` above.
 
-Executing these tests can be done with:
+Additional tests may be provided in the `tests/` folder. You can run this, and *all* challenge
+verifications with:
 
-```
+```yaml
 pytest
 ```
 
 ## Linting
-You can run `black solutions tests exec.py` and `ruff check ...` for linting.
+You can run `black solutions tests manage.py` and `ruff check ...` for linting.
