@@ -6,7 +6,7 @@ from typing import Any
 
 from aocd.models import Puzzle  # type: ignore[import-untyped]
 
-from solutions.run import get_solution_modules, run_function_in_solution, get_test_data_for_solution
+from solutions.run import get_solution_modules, get_test_data_for_solution, run_function_in_solution
 
 
 def error(msg: str) -> None:
@@ -102,6 +102,11 @@ def run_challenge(args: Any, solution_module: Any, function_name: str) -> Any:
         return
     else:
         print(f"Running challenge data in {args.challenge}:")
+        if function_name == "part_1" and puzzle.answered_a:
+            print("Answer:", puzzle.answer_a)
+        elif function_name == "part_2" and puzzle.answered_b:
+            print("Answer:", puzzle.answer_b)
+
         result = run_function_in_solution(solution_module, function_name, puzzle.input_data)
         print("Result:", result)
 

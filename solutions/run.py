@@ -2,9 +2,9 @@ import importlib
 import inspect
 import pathlib
 import pkgutil
-from collections.abc import Iterable
-from types import ModuleType, FunctionType
-from typing import Any, cast, Callable
+from collections.abc import Callable, Iterable
+from types import ModuleType
+from typing import Any, cast
 
 import yaml
 

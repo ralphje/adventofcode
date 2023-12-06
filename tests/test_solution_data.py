@@ -1,6 +1,6 @@
 import pytest
 
-from solutions.run import get_test_data_for_solution, get_solution_modules, run_function_in_solution
+from solutions.run import get_solution_modules, get_test_data_for_solution, run_function_in_solution
 
 
 def _iter_solutions_and_test_data():

@@ -43,8 +43,8 @@ def part_1(lines: list[str]) -> int:
     In the third race, you could hold the button for at least 11 milliseconds and no more than 19
     milliseconds and still beat the record, a total of 9 ways you could win.
 
-    To see how much margin of error you have, determine the number of ways you can beat the record in
-    each race; in this example, if you multiply these values together, you get 288 (4 * 8 * 9).
+    To see how much margin of error you have, determine the number of ways you can beat the record
+    in each race; in this example, if you multiply these values together, you get 288 (4 * 8 * 9).
 
     Determine the number of ways you could beat the record in each race. What do you get if you
     multiply these numbers together?
@@ -62,15 +62,17 @@ def part_1(lines: list[str]) -> int:
     #  x = (-b ± √(b² - 4ac)) / 2a, a = -1, b = t, c = -d
     #  b = (-t ± √(t² - 4d)) / -2
     #
-    # To solve this, we need to make sure that we floor the lower result + 1 (and conversely for
-    # the upper we need to ceil - 1), to ensure that we have values that are within range.
+    # These equations provide the lower (-) and upper (+) bounds (exclusive) of the acceptable
+    # values for b. Since it is exclusive, we cannot simply ceil and floor the results, as that
+    # would be incorrect if the value is already rounded to an integer value. To solve this, we
+    # need to make sure that we floor the lower bound and add 1 (and conversely for the upper bound
+    # we need to ceil and subtract 1), to ensure that we have values that are within range.
     #
-    # Then, we can simply subtract them from each other, and add 1. In other words,
-    #  (ceil(-) - 1)  -  (floor(+) + 1)
-    # This is equal to:
-    #  ceil(-) - floor(+) - 2
-    # And finally add 1 as both are inclusive, thus
-    #  ceil(-) - floor(+) - 1
+    # Then, we can simply subtract them from each other to get the amount of acceptable values,
+    # adding one as both ranges are now inclusive:
+    #  (ceil(-) - 1)  -  (floor(+) + 1) + 1
+    #  = ceil(-) - floor(+) - 2 + 1
+    #  = ceil(-) - floor(+) - 1
     #
     # Micro-optimization: since the √(t² - 4d) part is the same, we can simply calculate it once
     # by using an assignment expression.
@@ -79,10 +81,7 @@ def part_1(lines: list[str]) -> int:
         math.ceil((-time - (sqrt := math.sqrt(time**2 - 4 * distance))) / -2)
         - math.floor((-time + sqrt) / -2)
         - 1
-        for time, distance in zip(
-            *(map(int, line.split(":")[1].split()) for line in lines),
-            strict=True,
-        )
+        for time, distance in zip(*(map(int, line.split(":")[1].split()) for line in lines))
     )
 
 
