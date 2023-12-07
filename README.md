@@ -1,6 +1,6 @@
 # adventofcode
 
-These are my solutions to some Advent of Code 2023 challenges. See https://adventofcode.com/2023
+These are my solutions to some Advent of Code challenges. See https://adventofcode.com/
 for more information.
 
 My goal is to create concise, yet readable solutions.
@@ -60,6 +60,8 @@ You can also use the integration with [advent-code-of-data](https://github.com/w
 pip install .
 aoc -y 2023 --no-submit
 ```
+
+Note that you must probably reinstall after a solution change.
 
 ## Linting
 You can run `black solutions tests manage.py` and `ruff check ...` for linting.
