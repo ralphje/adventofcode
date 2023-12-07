@@ -53,5 +53,13 @@ verifications with:
 pytest
 ```
 
+## AoC-data integration
+You can also use the integration with [advent-code-of-data](https://github.com/wimglenn/advent-of-code-data)'s `aoc` command:
+
+```
+pip install .
+aoc -y 2023 --no-submit
+```
+
 ## Linting
 You can run `black solutions tests manage.py` and `ruff check ...` for linting.

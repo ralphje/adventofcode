@@ -1,3 +1,12 @@
+[project]
+name = "adventofcode-solutions"
+version = "2013"
+description = "Advent of Code solutions"
+requires-python = ">=3.12"
+
+[project.entry-points."adventofcode.user"]
+ralphje = "solutions.run:aoc_entrypoint"
+
 [tool.black]
 line-length = 100
 target-version = ['py312']

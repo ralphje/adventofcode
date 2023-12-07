@@ -72,3 +72,11 @@ def run_function(function: Callable[..., Any], data: str, *args: Any, **kwargs: 
         return function(data, *args, **kwargs)
     else:
         raise Exception(f"Unknown how to execute with annotation {annotation!r}")
+
+
+def aoc_entrypoint(year: int, day: int, data: str) -> tuple[Any, Any]:
+    for solution_module in get_solution_modules(year, day):
+        part_a = run_function_in_solution(solution_module, "part_1", data)
+        part_b = run_function_in_solution(solution_module, "part_2", data)
+        return part_a, part_b
+    return None, None
