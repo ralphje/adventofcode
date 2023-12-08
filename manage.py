@@ -62,8 +62,10 @@ def create_solution_file(args: Any) -> None:
 
     with day_file.open("w") as f:
         f.write(
-            "def part_1(document: str) -> int:\n    pass\n\n\n"
-            "def part_2(document: str) -> int:\n    pass\n"
+            "def part_1(document: str) -> int:\n"
+            f'    """Solution for Advent of Code {year} day {day} part 1"""\n    pass\n\n\n'
+            "def part_2(document: str) -> int:\n"
+            f'    """Solution for Advent of Code {year} day {day} part 2"""\n    pass\n'
         )
     print(colored(f"Created challenge file in {day_file}", "green"))
 
