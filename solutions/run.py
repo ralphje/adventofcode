@@ -17,9 +17,11 @@ def get_solution_modules(
     """Returns all solution modules for the given year and/or day."""
 
     for _, year_module_name, is_package in pkgutil.walk_packages(solutions.__path__):
-        if not is_package:
-            continue
-        if year is not None and str(year) not in year_module_name:
+        if (
+            not is_package
+            or not year_module_name.startswith("year")
+            or (year is not None and str(year) not in year_module_name)
+        ):
             continue
         package = importlib.import_module(f"solutions.{year_module_name}")
         for _, day_module_name, _ in pkgutil.walk_packages(package.__path__):
