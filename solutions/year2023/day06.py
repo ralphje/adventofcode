@@ -4,6 +4,9 @@ https://adventofcode.com/2023/day/6
 
 import math
 
+from solutions.common.math import quadratic_formula
+from solutions.common.strings import ints
+
 
 def part_1(lines: list[str]) -> int:
     """Solution for Advent of Code 2023 day 6 part 1"""
@@ -37,10 +40,8 @@ def part_1(lines: list[str]) -> int:
     # by using an assignment expression.
 
     return math.prod(
-        math.ceil((-time - (sqrt := math.sqrt(time**2 - 4 * distance))) / -2)
-        - math.floor((-time + sqrt) / -2)
-        - 1
-        for time, distance in zip(*(map(int, line.split(":")[1].split()) for line in lines))
+        math.ceil((quad := quadratic_formula(-1, time, -distance))[0]) - math.floor(quad[1]) - 1
+        for time, distance in zip(*(ints(line) for line in lines))
     )
 
 

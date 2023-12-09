@@ -9,6 +9,8 @@ import itertools
 from collections.abc import Iterable
 from typing import Self
 
+from solutions.common.strings import ints
+
 
 class Range:
     """A range with some additional options."""
@@ -114,7 +116,7 @@ def _parse_mappings(sections: list[str]) -> list[list[MappingItem]]:
             # And add the ranges to the Mapping object, skipping the mapping title.
             for line in section.splitlines()[1:]
             # Line is "destination source size"
-            if (split := tuple(map(int, line.split())))
+            if (split := ints(line))
         ]
         # Split on each section, skipping the first one (the seeds)
         for section in sections[1:]
@@ -184,7 +186,7 @@ def part_1(document: str) -> int:
             mappings,
             seed,
         )
-        for seed in map(int, sections[0].split(": ")[1].split())
+        for seed in ints(sections[0])
     )
 
 
@@ -200,9 +202,7 @@ def part_2(document: str) -> int:
     # Collect seed ranges as if they are mapping items, with an offset of 0.
     seed_ranges = [
         MappingItem(Range(seed_start, seed_size))
-        for seed_start, seed_size in itertools.batched(
-            map(int, sections[0].split(": ")[1].split()), 2
-        )
+        for seed_start, seed_size in itertools.batched(ints(sections[0]), 2)
     ]
 
     # Iterate over each mapping and calculate our source/target ranges, generating a new
@@ -231,8 +231,6 @@ def part_2_naive(document: str) -> int:
             mappings,
             seed,
         )
-        for seed_start, seed_size in itertools.batched(
-            map(int, sections[0].split(": ")[1].split()), 2
-        )
+        for seed_start, seed_size in itertools.batched(ints(sections[0]), 2)
         for seed in range(seed_start, seed_start + seed_size)
     )
