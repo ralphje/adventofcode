@@ -29,7 +29,7 @@ def hand_strength(
     # Get all card counts to get a ranking, using the fact that [1,1,1,1,1] sorts lower than
     # [2,1,1,1], ... to the best case, five-of-a-kind: [5].
     # List becomes [0] for the case that all values are Jokers (otherwise empty list)
-    type_strength = list(sorted(counts.values(), reverse=True)) or [0]
+    type_strength = sorted(counts.values(), reverse=True) or [0]
     # Add the joker bonus if we have special handling for jokers (otherwise it is 0)
     type_strength[0] += joker_bonus
 
@@ -37,7 +37,7 @@ def hand_strength(
         type_strength,
         # Individual lookup of cards in the hand in the cards index. Sort cards in reverse order
         # to ensure proper ordering of worst to best.
-        list(cards[::-1].index(card) for card in hand),
+        [cards[::-1].index(card) for card in hand],
     )
 
 

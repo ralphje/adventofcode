@@ -1,6 +1,5 @@
 import re
 
-
 _ALL_INTS_RE = re.compile(r"-?\d+")
 
 

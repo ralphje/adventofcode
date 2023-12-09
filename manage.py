@@ -62,7 +62,7 @@ def create_solution_file(args: Any) -> None:
 
     try:
         puzzle = Puzzle(year=year, day=day)
-    except Exception as e:
+    except Exception:
         comment = (
             f'"""This file holds the solutions for Advent of Code {year} day {day}\n'
             f'https://adventofcode.com/{year}/day/{day}\n"""'
@@ -122,10 +122,13 @@ def run_test(solution_module: Any, function_name: str) -> bool:
         return True
 
     for i, test_data in enumerate(test_datas):
-        if args.challenge not in test_data:
-            continue
         print(f"Running test data {i} in {solution_module.__name__}.{function_name}:")
-        expect = test_data[args.challenge]
+        if function_name.startswith("part_1") and "part_1" in test_data:
+            expect = test_data["part_1"]
+        elif function_name.startswith("part_2") and "part_2" in test_data:
+            expect = test_data["part_2"]
+        else:
+            continue
         result = run_function_in_solution(solution_module, args.challenge, test_data["input"])
         if expect == result:
             print(f"{colored('✔', 'green')} {expect}")
@@ -145,9 +148,9 @@ def run_challenge(args: Any, solution_module: Any, function_name: str) -> Any:
         return
     else:
         print(f"Running challenge data in {solution_module.__name__}.{args.challenge}:")
-        if function_name == "part_1" and puzzle.answered_a:
+        if function_name.startswith("part_1") and puzzle.answered_a:
             expect = puzzle.answer_a
-        elif function_name == "part_2" and puzzle.answered_b:
+        elif function_name.startswith("part_2") and puzzle.answered_b:
             expect = puzzle.answer_b
         else:
             expect = None
@@ -231,12 +234,12 @@ def parse_args() -> Any:
     parser_create.set_defaults(func=create)
 
     parser_run = subparsers.add_parser("run", help="Execute challenge")
-    parser_run.add_argument("challenge", choices=VALID_PARTS, type=_convert_part)
+    parser_run.add_argument("challenge", type=_convert_part)
     parser_run.add_argument("input", choices=["test", "challenge"], default="test", nargs="?")
     parser_run.set_defaults(func=run)
 
     parser_submit = subparsers.add_parser("submit", help="Submit challenge")
-    parser_submit.add_argument("challenge", choices=VALID_PARTS, type=_convert_part)
+    parser_submit.add_argument("challenge", type=_convert_part)
     parser_submit.add_argument("--force", action="store_true")
     parser_submit.set_defaults(func=submit)
 
