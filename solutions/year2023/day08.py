@@ -1,3 +1,7 @@
+"""This file holds the solutions for Advent of Code 2023 day 8: Haunted Wasteland
+https://adventofcode.com/2023/day/8
+"""
+
 import itertools
 import math
 import re

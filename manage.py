@@ -60,11 +60,25 @@ def create_solution_file(args: Any) -> None:
         )
         return
 
+    try:
+        puzzle = Puzzle(year=year, day=day)
+    except Exception as e:
+        comment = (
+            f'"""This file holds the solutions for Advent of Code {year} day {day}\n'
+            f'https://adventofcode.com/{year}/day/{day}\n"""'
+        )
+    else:
+        comment = (
+            f'"""This file holds the solutions for Advent of Code {year} day {day}: '
+            f'{puzzle.title}\nhttps://adventofcode.com/{year}/day/{day}\n"""'
+        )
+
     with day_file.open("w") as f:
         f.write(
-            "def part_1(document: str) -> int:\n"
+            f"{comment}\n\n\n"
+            "def part_1(lines: list[str]) -> int:\n"
             f'    """Solution for Advent of Code {year} day {day} part 1"""\n    pass\n\n\n'
-            "def part_2(document: str) -> int:\n"
+            "def part_2(lines: list[str]) -> int:\n"
             f'    """Solution for Advent of Code {year} day {day} part 2"""\n    pass\n'
         )
     print(colored(f"Created challenge file in {day_file}", "green"))
