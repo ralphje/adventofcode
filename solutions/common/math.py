@@ -1,3 +1,4 @@
+import itertools
 import math
 from collections.abc import Iterable
 
@@ -36,15 +37,8 @@ def factors(n: int) -> Iterable[int]:
     not repeat, i.e. the same primes are all combined into one factor. The output is not sorted.
     """
 
-    prev_factor, prod = None, 1
-    for factor in prime_factors(n):
-        if prev_factor == factor:
-            prod *= factor
-            continue
-        if prev_factor is not None:
-            yield prod
-        prev_factor = prod = factor
-    yield prod
+    for _, g in itertools.groupby(prime_factors(n)):
+        yield math.prod(g)
 
 
 def extended_gcd(a: int, b: int) -> tuple[int, int, int]:
@@ -91,7 +85,7 @@ def _coprime_congruences(
     # Transform all elements in their own factors
     for n_i, a_i in zip(n, a):
         for factor in factors(n_i):
-            new.add((factor, a_i))
+            new.add((factor, a_i % factor))
 
     # Remove duplicate factors, keep only the highest.
     for f, _ in sorted(new, reverse=True):
