@@ -103,9 +103,9 @@ def part_2(board: list[str]) -> int:
 
     loop = list(_walk(board, _start_node(board)))
     result = 0
+    # We start outside the pipe loop
+    outside = True
     for y, row in enumerate(board):
-        # We start outside the pipe loop, and we are not currently on a horizontal line
-        outside, on_line = True, None
         for x, pipe in enumerate(row):
             # If we are not on the loop, we can simply replace whatever is here with a O or I
             if (x, y) not in loop:
@@ -118,20 +118,14 @@ def part_2(board: list[str]) -> int:
                 # Ensure that we use the correct pipe on the starting location
                 pipe = _correct_pipe(board, (x, y))
 
-            if pipe == "|":
-                # If we meet a horizontal pipe, we must be passing from the outside to the inside
-                # or vise versa
+            # We can simply check whether we encounter any N (or, similarly, any S) in the
+            # pipe's directions. If we meet a | (N->S) we are always passing from the outside to
+            # the inside, or vice versa. If we encounter two corner pieces, with an odd number of
+            # N's, such as L7 or FJ, we effectively passed a pipe, so we also flip. Conversely,
+            # when we encounter two corner pieces with 0 or 2 N's, we have not passed beyond the
+            # pipe and do not enter/exit the inside of the loop (even number of flips == no flips).
+            if N in PIPES[pipe]:
                 outside = not outside
-            elif pipe in "LF":
-                # If the pipe we meet is the start of a horizontal line, we keep track of the
-                # beginning
-                on_line = pipe
-            elif pipe in "7J":
-                # If the pipe we meet is the end of a horizontal line, we now can see which way it
-                # is going. If it is going through the line, we have flipped the outside/inside.
-                # If it is NOT going through the line, we have effectively done nothing.
-                if on_line == "L" and pipe == "7" or on_line == "F" and pipe == "J":
-                    outside = not outside
 
     ### [print(b) for b in board]
 
