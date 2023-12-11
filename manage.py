@@ -7,6 +7,7 @@ import platform
 import sys
 import textwrap
 import time
+from collections.abc import Iterator
 from typing import Any
 
 from aocd.models import Puzzle  # type: ignore[import-untyped]
@@ -23,7 +24,7 @@ if platform.system() == "Windows":
     os.system("color")  # hack - makes ANSI colors work in the windows cmd window
 
 
-def colored(txt, color):
+def colored(txt: str, color: str) -> str:
     if color is None:
         return txt
     code = [
@@ -41,7 +42,7 @@ def colored(txt, color):
 
 
 @contextlib.contextmanager
-def timer():
+def timer() -> Iterator[dict[str, float]]:
     result = {"start_time": time.perf_counter()}
     yield result
     result["end_time"] = time.perf_counter()

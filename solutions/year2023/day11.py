@@ -18,9 +18,9 @@ def _stars(universe: list[str], expansion_factor: int = 2) -> set[tuple[int, int
         (
             # Take the amount of columns before this column, and multiply that with
             # expansion_factor - 1 (because 1 is already in the data), add that to the coordinate
-            x + count(itertools.takewhile(lambda c: c < x, empty_cols), expansion_factor - 1),
+            x + count(itertools.takewhile(lambda c, x=x: c < x, empty_cols), expansion_factor - 1),
             # Same for y and its rows
-            y + count(itertools.takewhile(lambda r: r < y, empty_rows), expansion_factor - 1),
+            y + count(itertools.takewhile(lambda r, y=y: r < y, empty_rows), expansion_factor - 1),
         )
         for y, line in enumerate(universe)
         for x, star in enumerate(line)

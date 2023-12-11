@@ -41,12 +41,11 @@ def hand_strength(
     )
 
 
-def solution(lines: list[str], cards: str, special_joker: bool) -> int:
-    """Provides the solution.
+def part_1(lines: list[str], cards: str = "AKQJT98765432", special_joker: bool = False) -> int:
+    """Solution for Advent of Code 2023 day 7 part 1"""
 
-    The solution is the sum of all (rank*bids) for a sorted list of hands, as sorted by the
-    hand_strength function.
-    """
+    # The solution is the sum of all (rank*bids) for a sorted list of hands, as sorted by the
+    # hand_strength function.
     return sum(
         (rank + 1) * int(card_bid[1])
         for rank, card_bid in enumerate(
@@ -58,13 +57,7 @@ def solution(lines: list[str], cards: str, special_joker: bool) -> int:
     )
 
 
-def part_1(lines: list[str]) -> int:
-    """Solution for Advent of Code 2023 day 7 part 1"""
-
-    return solution(lines, "AKQJT98765432", special_joker=False)
-
-
 def part_2(lines: list[str]) -> int:
     """Solution for Advent of Code 2023 day 7 part 2"""
 
-    return solution(lines, "AKQT98765432J", special_joker=True)
+    return part_1(lines, "AKQT98765432J", special_joker=True)

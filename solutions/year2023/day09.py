@@ -7,7 +7,7 @@ import itertools
 from solutions.common.strings import ints
 
 
-def extrapolate(values: list[int], back=False) -> int:
+def extrapolate(values: list[int], back: bool = False) -> int:
     if not any(values):  # same as: if all(v == 0 for v in values)
         return 0
 
