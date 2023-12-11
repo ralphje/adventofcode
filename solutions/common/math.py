@@ -1,6 +1,7 @@
 import itertools
 import math
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
+from typing import cast
 
 
 def quadratic_formula(a: int, b: int, c: int) -> tuple[float, float]:
@@ -58,9 +59,9 @@ def extended_gcd(a: int, b: int) -> tuple[int, int, int]:
     return gcd, t, s - q * t
 
 
-def chinese_remainder(n: list[int] | tuple[int], a: list[int] | tuple[int]) -> int:
+def chinese_remainder(n: Sequence[int], a: Sequence[int]) -> int:
     """Given two lists of integers, ``nᵢ`` and ``aᵢ``, return ``x`` such that for each ``i``
-    ``x ≡ aᵢ (mod nᵢ)``, where ``nᵢ`` is required to be coprime
+    ``x ≡ aᵢ (mod nᵢ)``, where every pair of ``nᵢ`` is required to be coprime
     """
     n_prod = math.prod(n)
     return (
@@ -68,9 +69,7 @@ def chinese_remainder(n: list[int] | tuple[int], a: list[int] | tuple[int]) -> i
     ) or n_prod  # return n_prod when result would be 0
 
 
-def _coprime_congruences(
-    n: list[int] | tuple[int], a: list[int] | tuple[int]
-) -> tuple[tuple[int], tuple[int]]:
+def _coprime_congruences(n: Sequence[int], a: Sequence[int]) -> tuple[tuple[int], tuple[int]]:
     """Given two lists of integers, ``nᵢ`` and ``aᵢ``, return two new lists of integers, that are
     congruent in the Chinese Remainder Theorem, and are co-prime. Any ``nᵢ`` is separated into its
     factors, and any remaining ``nᵢ`` that is a factor of any other ``nⱼ``, is discarded.
@@ -79,27 +78,49 @@ def _coprime_congruences(
 
     See https://math.stackexchange.com/questions/120070/
     and https://math.stackexchange.com/questions/1095442/
+    and https://math.stackexchange.com/questions/1644677/
     """
 
-    new = set()
-    # Transform all elements in their own factors
+    # Transform into a dictionary with a key check to prevent duplicates
+    input_dict: dict[int, int] = {}
     for n_i, a_i in zip(n, a):
+        if input_dict.get(n_i, a_i) != a_i:
+            raise ValueError(
+                "Two contradicting equations were provided:\n"
+                f"x ≡ {a_i} mod {n_i}\nx ≡ {input_dict[n_i]} mod {n_i}"
+            )
+        input_dict[n_i] = a_i
+
+    # Transform all elements in their own factors
+    for n_i, a_i in list(input_dict.items()):
+        del input_dict[n_i]
+
         for factor in factors(n_i):
-            new.add((factor, a_i % factor))
+            if input_dict.get(factor, a_i) % factor != a_i % factor:
+                raise ValueError(
+                    f"Factorization of {n_i} resulted in a contradiction:\n"
+                    f"x ≡ {a_i} mod {factor}\nx ≡ {input_dict[factor]} mod {factor}"
+                )
+            input_dict[factor] = a_i % factor
 
     # Remove duplicate factors, keep only the highest.
-    for f, _ in sorted(new, reverse=True):
-        for n_i, a_i in list(new):
-            if f % n_i == 0 and f != n_i:
-                new.discard((n_i, a_i))
+    for factor in sorted(input_dict, reverse=True):
+        for n_i, a_i in list(input_dict.items()):
+            if factor % n_i == 0 and factor > n_i:
+                if input_dict[factor] % n_i != a_i % n_i:
+                    raise ValueError(
+                        "Found contradiction during removal of duplicate factors:\n"
+                        f"x ≡ {a_i} mod {n_i}\nx ≡ {input_dict[factor]} mod {factor}"
+                    )
+                del input_dict[n_i]
 
-    return tuple(zip(*new))
+    return cast(tuple[tuple[int], tuple[int]], tuple(zip(*input_dict.items())))
 
 
-def chinese_remainder_generic(n: list[int] | tuple[int], a: list[int] | tuple[int]) -> int:
+def chinese_remainder_generic(n: Sequence[int], a: Sequence[int]) -> int:
     """Given two lists of integers, ``nᵢ`` and ``aᵢ``, return ``x`` such that for each ``i``
-    ``x ≡ aᵢ (mod nᵢ)``, where ``nᵢ`` is not required to be coprime. This does not check whether
-    any solution exists or is valid.
+    ``x ≡ aᵢ (mod nᵢ)``, where ``nᵢ`` is not required to be coprime. This is done by converting all
+    congruences into coprime congruences. Some checks are performed, but no guarantees are given.
     """
 
     return chinese_remainder(*_coprime_congruences(n, a))

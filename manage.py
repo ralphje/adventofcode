@@ -1,10 +1,12 @@
 import argparse
+import contextlib
 import datetime
 import os
 import pathlib
 import platform
 import sys
 import textwrap
+import time
 from typing import Any
 
 from aocd.models import Puzzle  # type: ignore[import-untyped]
@@ -36,6 +38,14 @@ def colored(txt, color):
     ].index(color.casefold())
     reset = "\x1b[0m"
     return f"\x1b[{code + 30}m{txt}{reset}"
+
+
+@contextlib.contextmanager
+def timer():
+    result = {"start_time": time.perf_counter()}
+    yield result
+    result["end_time"] = time.perf_counter()
+    result["duration"] = result["end_time"] - result["start_time"]
 
 
 def create(args: Any) -> None:
@@ -129,11 +139,13 @@ def run_test(solution_module: Any, function_name: str) -> bool:
             expect = test_data["part_2"]
         else:
             continue
-        result = run_function_in_solution(solution_module, args.challenge, test_data["input"])
+        with timer() as duration:
+            result = run_function_in_solution(solution_module, args.challenge, test_data["input"])
+        duration_text = colored(f"({duration['duration']:.2f}s)", "blue")
         if expect == result:
-            print(f"{colored('✔', 'green')} {expect}")
+            print(f"{colored('✔', 'green')} {expect}  {duration_text}")
         else:
-            print(f"{colored('✖', 'red')} {result} (expected: {expect})")
+            print(f"{colored('✖', 'red')} {result} (expected: {expect})  {duration_text}")
             total_result = False
 
     return total_result
@@ -155,13 +167,15 @@ def run_challenge(args: Any, solution_module: Any, function_name: str) -> Any:
         else:
             expect = None
 
-        result = run_function_in_solution(solution_module, function_name, puzzle.input_data)
+        with timer() as duration:
+            result = run_function_in_solution(solution_module, function_name, puzzle.input_data)
+        duration_text = colored(f"({duration['duration']:.2f}s)", "blue")
         if expect is None:
-            print(f"{colored('?', 'magenta')} {result}")
+            print(f"{colored('?', 'magenta')} {result}  {duration_text}")
         elif expect == str(result):
-            print(f"{colored('✔', 'green')} {expect}")
+            print(f"{colored('✔', 'green')} {expect}  {duration_text}")
         else:
-            print(f"{colored('✖', 'red')} {result} (expected: {expect})")
+            print(f"{colored('✖', 'red')} {result} (expected: {expect})  {duration_text}")
 
     return result
 

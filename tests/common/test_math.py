@@ -109,3 +109,16 @@ def test_chinese_remainder_generic(n, a):
     result = chinese_remainder_generic(n, a)
     for n_i, a_i in zip(n, a):
         assert a_i % n_i == result % n_i
+
+
+@pytest.mark.parametrize(
+    ("n", "a"),
+    [
+        ([2, 2], [1, 2]),
+        ([2, 4], [1, 2]),
+        ([3, 12], [1, 3]),
+    ],
+)
+def test_chinese_remainder_generic_error(n, a):
+    with pytest.raises(ValueError):  # noqa
+        chinese_remainder_generic(n, a)

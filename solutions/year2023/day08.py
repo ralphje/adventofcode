@@ -37,6 +37,7 @@ def _number_of_moves(node: str, directions: str, nodes: dict[str, tuple[str, str
         if node.endswith("Z"):
             return i
         node = nodes[node][int(direction == "R")]
+    raise AssertionError("unreachable")
 
 
 def part_1(lines: list[str]) -> int:
@@ -74,7 +75,8 @@ def _cycle_detect(
 
     """
 
-    loop_start, seen = 0, []
+    loop_start = 0
+    seen: list[tuple[int, str]] = []
     for i, direction in enumerate(itertools.cycle(directions)):
         curr = (i % len(directions), node)
         if curr in seen:

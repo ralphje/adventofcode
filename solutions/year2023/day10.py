@@ -5,7 +5,9 @@ https://adventofcode.com/2023/day/10
 from collections.abc import Iterable
 
 from solutions.common.iter import count
-from solutions.common.strings import offset_replace
+
+type Direction = tuple[int, int]
+type Coordinate = tuple[int, int]
 
 N = (0, -1)
 S = (0, +1)
@@ -23,20 +25,17 @@ PIPES = {
 }
 
 
-type Coordinate = tuple[int, int]
-
-
 def _start_node(board: list[str]) -> Coordinate:
     """Returns the starting node on the board"""
     for y, row in enumerate(board):
         if (x := row.find("S")) != -1:
             return x, y
-    assert False
+    raise AssertionError("unreachable")
 
 
 def _possible_directions(
     board: list[str], position: Coordinate
-) -> Iterable[tuple[str, Coordinate]]:
+) -> Iterable[tuple[Direction, Coordinate]]:
     """Returns the possible directions from a given position."""
 
     # The bounds of the board (exclusive)
