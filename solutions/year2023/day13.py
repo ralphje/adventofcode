@@ -32,10 +32,11 @@ def part_1(blocks: str, smudges: int = 0) -> int:
     """Solution for Advent of Code 2023 day 13 part 1"""
     return sum(
         # amount of horizontal mirror points
-        _find_mirror_point(block, smudges) * 100
+        _find_mirror_point(block, smudges) * 100  # type: ignore  # seems to be a bug???
         # amount of vertical mirror points
-        + _find_mirror_point(list(zip(*block)), smudges)
-        for block in [s.splitlines() for s in blocks.split("\n\n")]
+        + _find_mirror_point(list(zip(*block)), smudges)  # type: ignore[arg-type]  # list cast
+        for s in blocks.split("\n\n")
+        if (block := s.splitlines())
     )
 
 
