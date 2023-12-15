@@ -5,7 +5,7 @@ https://adventofcode.com/2023/day/14
 import functools
 import itertools
 import math
-from collections.abc import Sequence, Iterable
+from collections.abc import Iterable, Sequence
 
 
 @functools.cache
