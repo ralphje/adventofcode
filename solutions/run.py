@@ -69,11 +69,17 @@ def run_function(function: Callable[..., Any], data: str, *args: Any, **kwargs: 
 
     # Execute with correct annotation
     if annotation == list[str]:
-        return function(data.splitlines(), *args, **kwargs)
+        result = function(data.splitlines(), *args, **kwargs)
     elif annotation == str:
-        return function(data, *args, **kwargs)
+        result = function(data, *args, **kwargs)
     else:
         raise Exception(f"Unknown how to execute with annotation {annotation!r}")
+
+    # Ensure we return an int when we can
+    if isinstance(result, float | complex) and result.imag == 0.0 and result.real.is_integer():
+        result = int(result)
+
+    return result
 
 
 def aoc_entrypoint(year: int, day: int, data: str) -> tuple[Any, Any]:
