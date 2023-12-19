@@ -77,7 +77,7 @@ def run_function(function: Callable[..., Any], data: str, *args: Any, **kwargs: 
 
     # Ensure we return an int when we can
     if isinstance(result, float | complex) and result.imag == 0.0 and result.real.is_integer():
-        result = int(result)
+        result = int(result)  # type: ignore
 
     return result
 

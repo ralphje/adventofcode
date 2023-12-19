@@ -9,7 +9,7 @@ from collections.abc import Iterable, Iterator
 from solutions.common.grid import distance
 
 
-def shoelace_and_picks(points: Iterable[complex]) -> int:
+def shoelace_and_picks(points: Iterable[complex]) -> float:
     """This is a combination of the Shoelace formula and Pick's theorem.
 
     1. The Shoelace formula calculates the area inside a polygon, given the points of the polygon
@@ -33,15 +33,13 @@ def shoelace_and_picks(points: Iterable[complex]) -> int:
         b + i = S/2 + b/2 + 1
         b + i = (S + b)/2 + 1
 
-    We can further simplify in code as shown below.
+    We can further simplify in code as shown below, as we are going around in the right direction.
     """
 
     return (
-        abs(
-            sum(
-                pair[0].real * pair[1].imag - pair[0].imag * pair[1].real + distance(*pair)
-                for pair in itertools.pairwise(itertools.chain(points))
-            )
+        sum(
+            pair[0].real * pair[1].imag - pair[0].imag * pair[1].real + distance(*pair)
+            for pair in itertools.pairwise(itertools.chain(points))
         )
         // 2
         + 1
@@ -54,7 +52,7 @@ DIRECTIONS = {"R": 1, "L": -1, "U": -1j, "D": +1j}
 
 def _iter_coordinates_part_1(lines: list[str]) -> Iterator[complex]:
     """Iterate coordinates based on part 1 rules."""
-    location = 0
+    location = 0j
     yield location
     for line in lines:
         direction, distance, _ = DIG_RE.findall(line)[0]
@@ -62,7 +60,7 @@ def _iter_coordinates_part_1(lines: list[str]) -> Iterator[complex]:
         yield location
 
 
-def part_1(lines: list[str]) -> int:
+def part_1(lines: list[str]) -> float:
     """Solution for Advent of Code 2023 day 18 part 1"""
     return shoelace_and_picks(_iter_coordinates_part_1(lines))
 
@@ -72,7 +70,7 @@ PART_2_DIRECTIONS = str.maketrans("0123", "RDLU")
 
 def _iter_coordinates_part_2(lines: list[str]) -> Iterator[complex]:
     """Iterate coordinates based on part 2 rules."""
-    location = 0
+    location = 0j
     yield location
     for line in lines:
         _, _, color = DIG_RE.findall(line)[0]
@@ -80,6 +78,6 @@ def _iter_coordinates_part_2(lines: list[str]) -> Iterator[complex]:
         yield location
 
 
-def part_2(lines: list[str]) -> int:
+def part_2(lines: list[str]) -> float:
     """Solution for Advent of Code 2023 day 18 part 2"""
     return shoelace_and_picks(_iter_coordinates_part_2(lines))

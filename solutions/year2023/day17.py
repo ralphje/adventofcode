@@ -21,7 +21,9 @@ def directional_dijkstra(grid: list[str], min_dist: int = 1, max_dist: int = 3) 
     """
 
     max_x, max_y = len(grid[0]), len(grid)
-    costs = collections.defaultdict(lambda: math.inf)
+    costs: dict[tuple[tuple[int, int], tuple[int, int]], float] = collections.defaultdict(
+        lambda: math.inf
+    )
 
     # Create a heap, that keeps track of the cost to get here, the coordinates we are currently,
     # and the direction we used to get here. We start in the upper right corner. Assume we came

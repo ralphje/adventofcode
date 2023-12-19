@@ -16,7 +16,7 @@ W = (-1, 0)
 
 # mapping of encountered mirror, and the direction we encounter it in, to the direction we will
 # travel to after the encountered mirror
-MIRRORS: dict[str, dict[Direction, tuple[Direction]]] = {
+MIRRORS: dict[str, dict[Direction, tuple[Direction, ...]]] = {
     # continue through in same direction when . is encountered
     ".": {N: (N,), S: (S,), E: (E,), W: (W,)},
     # continue through in same direction for N/S, split to N and S when E/W
