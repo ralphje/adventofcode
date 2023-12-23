@@ -1,0 +1,14 @@
+- input: |
+    broadcaster -> a, b, c
+    %a -> b
+    %b -> c
+    %c -> inv
+    &inv -> a
+  part_1: 32000000
+- input: |
+    broadcaster -> a
+    %a -> inv, con
+    &inv -> b
+    %b -> con
+    &con -> output
+  part_1: 11687500

@@ -126,25 +126,30 @@ def create_test_data(args: Any) -> None:
     print(colored(f"Created test data in {day_file}", "green"))
 
 
-def run_test(solution_module: Any, function_name: str) -> bool:
+def run_test(solution_module: Any, function_name: str, run_all: bool = False) -> bool:
     total_result = True
     test_datas = get_test_data_for_solution(solution_module)
     if not test_datas:
         return True
 
     for i, test_data in enumerate(test_datas):
-        print(f"Running test data {i} in {solution_module.__name__}.{function_name}:")
         if function_name.startswith("part_1") and "part_1" in test_data:
             expect = test_data["part_1"]
         elif function_name.startswith("part_2") and "part_2" in test_data:
             expect = test_data["part_2"]
+        elif run_all:
+            expect = None
         else:
             continue
+
+        print(f"Running test data {i} in {solution_module.__name__}.{function_name}:")
         with timer() as duration:
             result = run_function_in_solution(solution_module, args.challenge, test_data["input"])
         duration_text = colored(f"({duration['duration']:.2f}s)", "blue")
-        if expect == result:
-            print(f"{colored('✔', 'green')} {expect}  {duration_text}")
+        if expect is None:
+            print(f"{colored('?', 'magenta')} {result}  {duration_text}")
+        elif expect == result:
+            print(f"{colored('✔', 'green')} {result}  {duration_text}")
         else:
             print(f"{colored('✖', 'red')} {result} (expected: {expect})  {duration_text}")
             total_result = False
@@ -184,9 +189,9 @@ def run_challenge(args: Any, solution_module: Any, function_name: str) -> Any:
 def run(args: Any) -> None:
     solution_modules = get_solution_modules(*args.year_day)
     for solution_module in solution_modules:
-        if args.input == "test":
-            run_test(solution_module, args.challenge)
-        elif args.input == "challenge":
+        if args.input == "test" or args.input == "all":
+            run_test(solution_module, args.challenge, args.all_tests)
+        if args.input == "challenge" or args.input == "all":
             run_challenge(args, solution_module, args.challenge)
 
 
@@ -250,7 +255,10 @@ def parse_args() -> Any:
 
     parser_run = subparsers.add_parser("run", help="Execute challenge")
     parser_run.add_argument("challenge", type=_convert_part)
-    parser_run.add_argument("input", choices=["test", "challenge"], default="test", nargs="?")
+    parser_run.add_argument(
+        "input", choices=["test", "challenge", "all"], default="test", nargs="?"
+    )
+    parser_run.add_argument("--all-tests", action="store_true")
     parser_run.set_defaults(func=run)
 
     parser_submit = subparsers.add_parser("submit", help="Submit challenge")
