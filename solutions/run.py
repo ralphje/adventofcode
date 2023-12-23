@@ -9,6 +9,7 @@ from typing import Any, cast
 import yaml
 
 import solutions
+from solutions.common.grid import Grid, FrozenGrid, RepeatingGrid
 
 
 def get_solution_modules(
@@ -72,6 +73,12 @@ def run_function(function: Callable[..., Any], data: str, *args: Any, **kwargs: 
         result = function(data.splitlines(), *args, **kwargs)
     elif annotation == str:
         result = function(data, *args, **kwargs)
+    elif annotation == Grid[str]:
+        result = function(Grid(data.splitlines()), *args, **kwargs)
+    elif annotation == FrozenGrid[str]:
+        result = function(FrozenGrid(data.splitlines()), *args, **kwargs)
+    elif annotation == RepeatingGrid[str]:
+        result = function(RepeatingGrid(data.splitlines()), *args, **kwargs)
     else:
         raise Exception(f"Unknown how to execute with annotation {annotation!r}")
 
