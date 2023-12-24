@@ -2,35 +2,39 @@
 https://adventofcode.com/2023/day/21
 """
 
-from collections.abc import Collection
+import collections
 
 from solutions.common.grid import Grid, RepeatingGrid
 
 
-def _all_directions(grid: Grid[str], locations: Collection[complex]) -> Collection[complex]:
-    """Given a set of locations, return all reachable locations from this set."""
+def _count_locations(grid: Grid[str], start: complex, steps: int) -> int:
+    """Count the locations reachable in the number of steps from the start location on the grid."""
 
-    # This saves 50% of time, by only checking the grid for # after selecting unique directions
-    directions = {direction for location in locations for direction in grid.orthogonal(location)}
-    return [d for d in directions if grid.get(d) != "#"]
-
-
-def _repeat_all_directions(
-    grid: Grid[str], locations: Collection[complex], steps: int
-) -> Collection[complex]:
-    """Try to reach all directions, a number of times.
-
-    This is extremely naive, as we could simply use the fact that the amount of steps must be even,
-    so we could just choose to ever expand into new directions, but whatever.
-    """
-    for _ in range(steps):
-        locations = _all_directions(grid, locations)
-    return locations
+    # Keep track of anything we've visited
+    visited = set()
+    # Anything we still need to visit
+    queue = collections.deque([(start, 0)])
+    # The result.
+    result = 0
+    while queue:
+        location, distance = queue.popleft()
+        # Do not visit the same node multiple times
+        if location in visited:
+            continue
+        visited.add(location)
+        # We only count the amount of steps with same parity, so if we know we have 10 steps
+        # we only count those that are reachable in 2, 4, 6, 8 or 10 steps. This optimizes for
+        # backtracking.
+        result += int(distance % 2 == steps % 2)
+        # If we've still got some to go, we continue in all orthogonal directions.
+        if distance < steps:
+            queue.extend((c, distance + 1) for c in grid.orthogonal(location) if grid.get(c) != "#")
+    return result
 
 
 def part_1(grid: Grid[str], steps: int = 64) -> int:
     """Solution for Advent of Code 2023 day 21 part 1"""
-    return len(_repeat_all_directions(grid, {next(grid.find("S"))}, steps))
+    return _count_locations(grid, next(grid.find("S")), steps)
 
 
 def part_2(grid: RepeatingGrid[str], steps: int = 26501365) -> float:
@@ -68,19 +72,13 @@ def part_2(grid: RepeatingGrid[str], steps: int = 26501365) -> float:
     # call these numbers r₁, r₂ and r₃.
 
     # Our initial location is S.
-    locations = {next(grid.find("S"))}
+    start_location = next(grid.find("S"))
 
     # Calculate r₁ = c, the amount of coordinates reachable after 65 steps
-    locations = _repeat_all_directions(grid, locations, remainder)
-    r_1 = len(locations)
-
     # Calculate r₂ = a + b + c, the amount of coordinates reachable after 65 + 131 steps
-    locations = _repeat_all_directions(grid, locations, len(grid))
-    r_2 = len(locations)
-
     # Calculate r₃ = 4a + 2b + c, the amount of coordinates reachable after 65 + 2 * 131 steps
-    locations = _repeat_all_directions(grid, locations, len(grid))
-    r_3 = len(locations)
+    # note: we could probably optimize by using the same result multiple times, but this works
+    r = [_count_locations(grid, start_location, remainder + len(grid) * i) for i in range(3)]
 
     # Given:
     # r₁ = p(0) = c
@@ -100,9 +98,9 @@ def part_2(grid: RepeatingGrid[str], steps: int = 26501365) -> float:
     #   = r₂ - (r₃ + r₁ - 2r₂) / 2 - r₁
     #   = 2r₂ / 2 - (r₃ + r₁ - 2r₂) / 2 - 2r₁ / 2
     #   = (4r₂ - 3r₁ - r₃) / 2
-    a = (r_3 + r_1 - 2 * r_2) / 2
-    b = (4 * r_2 - 3 * r_1 - r_3) / 2
-    c = r_1
+    a = (r[2] + r[0] - 2 * r[1]) / 2
+    b = (4 * r[1] - 3 * r[0] - r[2]) / 2
+    c = r[0]
 
     # Now we simply calculate the polynomial (ax² + bx + c) for number_of_grids (x = 202300)
     return a * (number_of_grids**2) + b * number_of_grids + c

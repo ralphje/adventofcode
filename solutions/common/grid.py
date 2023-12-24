@@ -1,4 +1,5 @@
-from typing import Any, Sequence, overload, Iterator
+from collections.abc import Iterator, Sequence
+from typing import Any, overload
 
 
 def distance(a: complex, b: complex) -> float:

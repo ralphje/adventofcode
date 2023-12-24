@@ -9,7 +9,7 @@ from typing import Any, cast
 import yaml
 
 import solutions
-from solutions.common.grid import Grid, FrozenGrid, RepeatingGrid
+from solutions.common.grid import FrozenGrid, Grid, RepeatingGrid
 
 
 def get_solution_modules(
