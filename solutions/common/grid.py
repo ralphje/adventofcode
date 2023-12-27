@@ -25,10 +25,17 @@ class Grid[T]:
         for row in self.rows:
             yield from row
 
+    @property
+    def coordinates(self) -> Iterator[complex]:
+        """Yield all coordinates."""
+        for x in range(self.width):
+            for y in range(self.height):
+                yield self._coordinate(x, y)
+
     @classmethod
     def _coordinate(cls, *args: Any) -> complex:
         """Convert the provided argument(s) into a complex number representing a coordinate."""
-        if len(args) == 1 and isinstance(args[0], complex):
+        if len(args) == 1 and isinstance(args[0], complex | int | float):
             return args[0]
         elif len(args) == 1 and isinstance(args[0], tuple):
             return complex(*args[0])
@@ -71,6 +78,9 @@ class Grid[T]:
         """Same as .get()"""
         return self.get(item)
 
+    def __contains__(self, item: Any) -> bool:
+        return self.in_bounds(item)
+
     @overload
     def get(self, coordinate: complex | tuple[int, int]) -> T: ...
 
@@ -88,6 +98,15 @@ class Grid[T]:
             complex(x, y)
             for y, row in enumerate(self._grid)
             for x, v in enumerate(row)
+            if v == value
+        )
+
+    def rfind(self, value: T) -> Iterator[complex]:
+        """Yields all coordinates for which the value is at that location."""
+        yield from (
+            complex(x, y)
+            for y, row in reversed(list(enumerate(self._grid)))
+            for x, v in reversed(list(enumerate(row)))
             if v == value
         )
 
