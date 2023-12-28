@@ -3,3 +3,4 @@ black
 ruff
 advent-of-code-data
 pyyaml
+sympy
